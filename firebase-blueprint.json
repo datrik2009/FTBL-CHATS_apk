@@ -1,0 +1,190 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile in FTBL Chats",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Unique Firebase Auth user ID" },
+        "displayName": { "type": "string", "description": "Full display name" },
+        "username": { "type": "string", "description": "Unique username" },
+        "bio": { "type": "string", "description": "Short bio" },
+        "photoUrl": { "type": "string", "description": "Profile picture URL or empty string" },
+        "phoneNumber": { "type": "string", "description": "Optional phone number" },
+        "favoriteClub": { "type": "string", "description": "Favorite football club" },
+        "isOnline": { "type": "boolean", "description": "Online presence flag" },
+        "lastSeen": { "type": "string", "format": "date-time", "description": "Last seen timestamp" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["userId", "displayName", "username", "createdAt"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "One-on-one or group conversation thread",
+      "type": "object",
+      "properties": {
+        "chatId": { "type": "string", "description": "Unique conversation ID" },
+        "isGroup": { "type": "boolean", "description": "Whether chat is a group" },
+        "name": { "type": "string", "description": "Group name or empty for 1:1" },
+        "description": { "type": "string", "description": "Group description" },
+        "photoUrl": { "type": "string", "description": "Group icon URL" },
+        "memberUids": { "type": "array", "description": "List of participant user IDs" },
+        "adminUids": { "type": "array", "description": "List of admin user IDs" },
+        "creatorUid": { "type": "string", "description": "UID of creator" },
+        "lastMessage": { "type": "string", "description": "Snippet of latest message" },
+        "lastMessageSenderId": { "type": "string", "description": "Sender of latest message" },
+        "lastMessageType": { "type": "string", "description": "text, image, voice, video, or file" },
+        "lastMessageTime": { "type": "string", "format": "date-time", "description": "Timestamp of latest message" },
+        "pinnedBy": { "type": "array", "description": "User IDs who pinned the chat" },
+        "mutedBy": { "type": "array", "description": "User IDs who muted the chat" },
+        "archivedBy": { "type": "array", "description": "User IDs who archived the chat" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Update timestamp" }
+      },
+      "required": ["chatId", "isGroup", "memberUids", "creatorUid", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Message within a chat",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string", "description": "Unique message ID" },
+        "chatId": { "type": "string", "description": "Parent chat ID" },
+        "senderId": { "type": "string", "description": "UID of sender" },
+        "senderName": { "type": "string", "description": "Name of sender" },
+        "senderPhotoUrl": { "type": "string", "description": "Avatar of sender" },
+        "type": { "type": "string", "description": "text, image, video, voice, or file" },
+        "text": { "type": "string", "description": "Message text or caption" },
+        "mediaUrl": { "type": "string", "description": "Media URL" },
+        "replyToId": { "type": "string", "description": "Replying to message ID" },
+        "replyToText": { "type": "string", "description": "Replying to message text" },
+        "replyToSender": { "type": "string", "description": "Replying to sender name" },
+        "reactions": { "type": "object", "description": "User ID to reaction emoji" },
+        "readBy": { "type": "array", "description": "List of user IDs who read message" },
+        "isEdited": { "type": "boolean", "description": "Whether message was edited" },
+        "memberUids": { "type": "array", "description": "Denormalized member UIDs for flat subcollection security evaluation" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Sent timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Edit timestamp" }
+      },
+      "required": ["messageId", "chatId", "senderId", "senderName", "type", "memberUids", "createdAt"]
+    },
+    "Status": {
+      "title": "Status",
+      "description": "Temporary 24h status update",
+      "type": "object",
+      "properties": {
+        "statusId": { "type": "string", "description": "Unique status ID" },
+        "userId": { "type": "string", "description": "Author UID" },
+        "userName": { "type": "string", "description": "Author display name" },
+        "userPhotoUrl": { "type": "string", "description": "Author photo" },
+        "type": { "type": "string", "description": "text, image, or video" },
+        "caption": { "type": "string", "description": "Status text or caption" },
+        "mediaUrl": { "type": "string", "description": "Status image or video URL" },
+        "backgroundColor": { "type": "string", "description": "Hex or theme color for text status" },
+        "viewedBy": { "type": "array", "description": "User IDs who viewed" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Status posted time" },
+        "expiresAt": { "type": "string", "format": "date-time", "description": "Status expiry time" }
+      },
+      "required": ["statusId", "userId", "userName", "type", "createdAt"]
+    },
+    "Call": {
+      "title": "Call",
+      "description": "Voice or video call session record and signaling root",
+      "type": "object",
+      "properties": {
+        "callId": { "type": "string", "description": "Unique call ID" },
+        "callerId": { "type": "string", "description": "Caller UID" },
+        "callerName": { "type": "string", "description": "Caller name" },
+        "callerPhotoUrl": { "type": "string", "description": "Caller avatar" },
+        "receiverId": { "type": "string", "description": "Receiver UID" },
+        "receiverName": { "type": "string", "description": "Receiver name" },
+        "receiverPhotoUrl": { "type": "string", "description": "Receiver avatar" },
+        "callType": { "type": "string", "description": "voice or video" },
+        "status": { "type": "string", "description": "calling, ringing, connected, ended, or rejected" },
+        "startedAt": { "type": "string", "format": "date-time", "description": "Call start time" },
+        "endedAt": { "type": "string", "format": "date-time", "description": "Call end time" },
+        "durationSeconds": { "type": "integer", "description": "Duration in seconds" },
+        "participantUids": { "type": "array", "description": "List of caller and receiver UIDs" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Update timestamp" }
+      },
+      "required": ["callId", "callerId", "receiverId", "callType", "status", "participantUids", "createdAt"]
+    },
+    "Signal": {
+      "title": "Signal",
+      "description": "WebRTC signaling message",
+      "type": "object",
+      "properties": {
+        "signalId": { "type": "string", "description": "Unique signal ID" },
+        "callId": { "type": "string", "description": "Parent call ID" },
+        "senderId": { "type": "string", "description": "UID of signal sender" },
+        "type": { "type": "string", "description": "offer, answer, candidate, or hangup" },
+        "payload": { "type": "string", "description": "SDP or ICE candidate JSON payload" },
+        "participantUids": { "type": "array", "description": "Allowed participants" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Signal timestamp" }
+      },
+      "required": ["signalId", "callId", "senderId", "type", "payload", "participantUids", "createdAt"]
+    },
+    "BlockedUser": {
+      "title": "BlockedUser",
+      "description": "Blocked user record",
+      "type": "object",
+      "properties": {
+        "blockId": { "type": "string", "description": "Unique block record ID" },
+        "userId": { "type": "string", "description": "UID of user who blocked" },
+        "blockedUserId": { "type": "string", "description": "UID of blocked user" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Block timestamp" }
+      },
+      "required": ["blockId", "userId", "blockedUserId", "createdAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "User or message moderation report",
+      "type": "object",
+      "properties": {
+        "reportId": { "type": "string", "description": "Unique report ID" },
+        "reporterId": { "type": "string", "description": "UID of reporting user" },
+        "reportedTargetId": { "type": "string", "description": "UID or ID of reported item" },
+        "reportedType": { "type": "string", "description": "user, message, or group" },
+        "reason": { "type": "string", "description": "Reason for report" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Report timestamp" }
+      },
+      "required": ["reportId", "reporterId", "reportedTargetId", "reportedType", "reason", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/chats/{chatId}": {
+      "schema": "Chat",
+      "description": "Conversation threads"
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages inside a conversation"
+    },
+    "/statuses/{statusId}": {
+      "schema": "Status",
+      "description": "Temporary 24h status posts"
+    },
+    "/calls/{callId}": {
+      "schema": "Call",
+      "description": "Calls and call history"
+    },
+    "/calls/{callId}/signals/{signalId}": {
+      "schema": "Signal",
+      "description": "WebRTC call signaling"
+    },
+    "/blockedUsers/{blockId}": {
+      "schema": "BlockedUser",
+      "description": "User blocklist records"
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Moderation reports"
+    }
+  }
+}

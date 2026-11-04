@@ -1,0 +1,6 @@
+{
+  "name": "FTBL Chats",
+  "description": "Real-time football messaging, groups, status updates, and audio/video calls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
