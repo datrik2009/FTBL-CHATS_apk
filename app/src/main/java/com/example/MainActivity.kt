@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.lifecycleScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         if (::userRepository.isInitialized && Firebase.auth.currentUser != null) {
             // Update online presence
-            kotlinx.coroutines.GlobalScope.launch {
+            lifecycleScope.launch {
                 userRepository.updatePresence(true)
             }
         }
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         if (::userRepository.isInitialized && Firebase.auth.currentUser != null) {
-            kotlinx.coroutines.GlobalScope.launch {
+            lifecycleScope.launch {
                 userRepository.updatePresence(false)
             }
         }

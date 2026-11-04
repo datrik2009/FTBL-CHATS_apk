@@ -38,7 +38,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -204,7 +204,7 @@ fun SettingsScreen(
                         onCheckedChange = { readReceiptsEnabled = it }
                     )
 
-                    Divider(modifier = Modifier.padding(vertical = 12.dp), color = PitchOutline)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = PitchOutline)
 
                     SettingToggleRow(
                         title = "Last Seen Visibility",
@@ -213,7 +213,7 @@ fun SettingsScreen(
                         onCheckedChange = { lastSeenEnabled = it }
                     )
 
-                    Divider(modifier = Modifier.padding(vertical = 12.dp), color = PitchOutline)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = PitchOutline)
 
                     SettingToggleRow(
                         title = "Online Presence",
@@ -222,7 +222,7 @@ fun SettingsScreen(
                         onCheckedChange = { onlineStatusEnabled = it }
                     )
 
-                    Divider(modifier = Modifier.padding(vertical = 12.dp), color = PitchOutline)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = PitchOutline)
 
                     Row(
                         modifier = Modifier
@@ -281,7 +281,7 @@ fun SettingsScreen(
                         )
                     }
 
-                    Divider(modifier = Modifier.padding(vertical = 8.dp), color = PitchOutline)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = PitchOutline)
 
                     // Delete account
                     Row(

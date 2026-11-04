@@ -1,0 +1,106 @@
+name: Release Android APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name to release (e.g. v1.0.0)'
+        required: false
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Determine Version Tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag_name }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Building release for tag: $TAG"
+
+      - name: Configure Keystore and Build Release APK
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'android' }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'android' }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          mkdir -p release-output
+
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Signing with provided GitHub Secrets keystore..."
+            echo "$KEYSTORE_BASE64" | base64 --decode > my-upload-key.jks
+            export KEYSTORE_PATH="$(pwd)/my-upload-key.jks"
+            ./gradlew assembleRelease --stacktrace
+            cp app/build/outputs/apk/release/app-release.apk "release-output/FTBL-Chats-${TAG}.apk"
+          else
+            echo "No custom KEYSTORE_BASE64 secret provided. Creating standalone signed release key..."
+            keytool -genkeypair -v -keystore my-upload-key.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "android" -keypass "android" -dname "CN=FTBL Chats, OU=Mobile, O=FTBL, L=London, C=UK"
+            export KEYSTORE_PATH="$(pwd)/my-upload-key.jks"
+            export STORE_PASSWORD="android"
+            export KEY_PASSWORD="android"
+            ./gradlew assembleRelease --stacktrace
+            cp app/build/outputs/apk/release/app-release.apk "release-output/FTBL-Chats-${TAG}.apk"
+          fi
+
+          echo "APK successfully generated:"
+          ls -lh release-output/
+
+      - name: Create GitHub Release and Attach APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: FTBL Chats ${{ steps.version.outputs.tag }}
+          draft: false
+          prerelease: false
+          files: release-output/FTBL-Chats-*.apk
+          body: |
+            ## ⚽ FTBL Chats ${{ steps.version.outputs.tag }}
+
+            Welcome to the official public release of **FTBL Chats** — the modern messaging and matchday social hub built for football supporters worldwide.
+
+            ### 📦 Download & Installation
+            1. Download the **`FTBL-Chats-${{ steps.version.outputs.tag }}.apk`** asset attached below.
+            2. On your Android device, tap the downloaded APK file.
+            3. If prompted by Android, enable **"Install unknown apps"** for your browser or file manager.
+            4. Follow the on-screen prompts to complete installation and sign in with your Google account.
+
+            ### 🌟 Key Features in this Release
+            - **Live Matchday Messaging:** Real-time 1-on-1 private messaging and Squad groups.
+            - **Matchday Status:** 24-hour disappearing football status updates and banter.
+            - **HD Voice & Video Calling:** Supporters matchday calls with WebRTC signaling and camera controls.
+            - **Supporter Profiles:** Select your club allegiance, customize your bio, and display your supporter badge.
+            - **Zero-Trust Security:** Hardened Firebase Firestore rules & Google Sign-In via Credential Manager.
+
+            ---
+            *Built natively with Kotlin, Jetpack Compose, and Material 3.*

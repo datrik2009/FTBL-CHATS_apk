@@ -18,10 +18,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.CallMade
+import androidx.compose.material.icons.automirrored.filled.CallReceived
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.CallMade
-import androidx.compose.material.icons.filled.CallReceived
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.SportsSoccer
 import androidx.compose.material.icons.filled.Videocam
@@ -178,7 +178,7 @@ fun CallsScreen(
                                     )
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
-                                            imageVector = if (isOutbound) Icons.Default.CallMade else Icons.Default.CallReceived,
+                                            imageVector = if (isOutbound) Icons.AutoMirrored.Filled.CallMade else Icons.AutoMirrored.Filled.CallReceived,
                                             contentDescription = null,
                                             tint = if (isOutbound) PitchSecondary else Color.Red,
                                             modifier = Modifier.size(14.dp)
